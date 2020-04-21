@@ -14,6 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
+mod timestamp;
+
+#[cfg(not(target_os = "unknown"))]
+mod http;
+
+#[cfg(target_os = "unknown")]
+mod http_dummy;
+
+#[cfg(not(target_os = "unknown"))]
+mod tee;
+
+#[cfg(target_os = "unknown")]
+mod tee_dummy;
+
 use std::{
 	str::FromStr,
 	sync::Arc,
@@ -32,15 +46,11 @@ use sp_core::offchain::{
 };
 pub use sp_offchain::STORAGE_PREFIX;
 
-#[cfg(not(target_os = "unknown"))]
-mod http;
-
 #[cfg(target_os = "unknown")]
 use http_dummy as http;
-#[cfg(target_os = "unknown")]
-mod http_dummy;
 
-mod timestamp;
+#[cfg(target_os = "unknown")]
+use tee_dummy as tee;
 
 /// Asynchronous offchain API.
 ///
@@ -178,6 +188,14 @@ impl<Storage: OffchainStorage> OffchainExt for Api<Storage> {
 		deadline: Option<Timestamp>
 	) -> Result<usize, HttpError> {
 		self.http.response_read_body(request_id, buffer, deadline)
+	}
+
+	fn tee_remote_attest(&mut self, enclave_url: Vec<u8>) -> Result<(), ()> {
+		todo!()
+	}
+
+	fn tee_call(&mut self, enclave_url: Vec<u8>, xt: Vec<u8>) -> Result<(), ()> {
+		todo!()
 	}
 }
 

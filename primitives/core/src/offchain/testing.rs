@@ -373,6 +373,14 @@ impl offchain::Externalities for TestOffchainExt {
 			Err(HttpError::IoError)
 		}
 	}
+
+	fn tee_remote_attest(&mut self, enclave_address: Vec<u8>) -> Result<(), ()> {
+		todo!()
+	}
+
+	fn tee_call(&mut self, enclave_address: Vec<u8>, xt: Vec<u8>) -> Result<(), ()> {
+		todo!()
+	}
 }
 
 /// The internal state of the fake transaction pool.

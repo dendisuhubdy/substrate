@@ -928,6 +928,18 @@ pub trait Offchain {
 			.http_response_read_body(request_id, buffer, deadline)
 			.map(|r| r as u32)
 	}
+
+	fn tee_remote_attest(&mut self, enclave_address: Vec<u8>) -> Result<(), ()> {
+		self.extension::<OffchainExt>()
+			.expect("tee_remote_attest can be called only in the offchain worker context")
+			.tee_remote_attest(enclave_address)
+	}
+
+	fn tee_call(&mut self, enclave_address: Vec<u8>, xt: Vec<u8>) -> Result<(), ()> {
+		self.extension::<OffchainExt>()
+			.expect("tee_remote_attest can be called only in the offchain worker context")
+			.tee_call(enclave_address, xt)
+	}
 }
 
 /// Wasm only interface that provides functions for calling into the allocator.

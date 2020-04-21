@@ -495,6 +495,12 @@ pub trait Externalities: Send {
 		buffer: &mut [u8],
 		deadline: Option<Timestamp>
 	) -> Result<usize, HttpError>;
+
+	/// Perform remote attestaion (verify) a particular enclave
+	fn tee_remote_attest(&mut self, enclave_address: Vec<u8>) -> Result<(), ()>;
+
+	/// Call an enclave with an encrypted extrinsic
+	fn tee_call(&mut self, enclave_address: Vec<u8>, xt: Vec<u8>) -> Result<(), ()>;
 }
 
 impl<T: Externalities + ?Sized> Externalities for Box<T> {
@@ -572,6 +578,14 @@ impl<T: Externalities + ?Sized> Externalities for Box<T> {
 		deadline: Option<Timestamp>
 	) -> Result<usize, HttpError> {
 		(&mut **self).http_response_read_body(request_id, buffer, deadline)
+	}
+
+	fn tee_remote_attest(&mut self, enclave_address: Vec<u8>) -> Result<(), ()> {
+		(&mut **self).tee_remote_attest(enclave_address)
+	}
+
+	fn tee_call(&mut self, enclave_address: Vec<u8>, xt: Vec<u8>) -> Result<(), ()> {
+		(&mut **self).tee_call(enclave_address, xt)
 	}
 }
 
@@ -690,6 +704,14 @@ impl<T: Externalities> Externalities for LimitedExternalities<T> {
 	) -> Result<usize, HttpError> {
 		self.check(Capability::Http, "http_response_read_body");
 		self.externalities.http_response_read_body(request_id, buffer, deadline)
+	}
+
+	fn tee_remote_attest(&mut self, enclave_address: Vec<u8>) -> Result<(), ()> {
+		todo!()
+	}
+
+	fn tee_call(&mut self, enclave_address: Vec<u8>, xt: Vec<u8>) -> Result<(), ()> {
+		todo!()
 	}
 }
 

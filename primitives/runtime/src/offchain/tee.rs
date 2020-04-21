@@ -15,11 +15,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! A collection of higher lever helpers for offchain calls.
+//! High-level helpers for interaction with SGX enclaves
 
-pub mod http;
-pub mod storage;
-pub mod storage_lock;
-pub mod tee;
+use sp_std::str;
+use sp_std::prelude::Vec;
+#[cfg(not(feature = "std"))]
+use sp_std::prelude::vec;
+use sp_core::RuntimeDebug;
+use sp_core::offchain::{
+	Timestamp,
+	HttpRequestId as RequestId,
+	HttpRequestStatus as RequestStatus,
+	HttpError,
+};
 
-pub use sp_core::offchain::*;
+pub struct Enclave;
+
+pub struct Sgx;
+
+impl Sgx {
+	pub fn remote_attest(url: Vec<u8>) -> Result<Enclave, ()> {
+		sp_io::offchain::tee_remote_attest(url);
+		todo!()
+	}
+
+	pub fn call(url: Vec<u8>) -> Result<Enclave, ()> {
+		todo!()
+	}
+}
